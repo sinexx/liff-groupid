@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LIFF - Get Group ID</title>
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <style>
+      body { font-family: sans-serif; text-align: center; margin-top: 5em; }
+      pre { background: #f2f2f2; padding: 1em; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h2>LIFF Group Info</h2>
+    <pre id="output">กำลังโหลด...</pre>
+
+    <script>
+      async function main() {
+        await liff.init({ liffId: "2007208271-AYapnm89" });
+
+        if (!liff.isInClient()) {
+          document.getElementById("output").textContent = "⚠️ กรุณาเปิดผ่านแอป LINE เท่านั้น";
+          return;
+        }
+
+        const context = liff.getContext();
+
+        if (context.type === "group") {
+          document.getElementById("output").textContent = "✅ Group ID:\n" + context.groupId;
+        } else {
+          document.getElementById("output").textContent = "❌ เปิดจาก: " + context.type + "\nกรุณาเปิดจากกลุ่ม LINE เท่านั้น";
+        }
+      }
+
+      main();
+    </script>
+  </body>
+</html>
