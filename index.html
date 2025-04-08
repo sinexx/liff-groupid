@@ -2,31 +2,73 @@
 <html>
   <head>
     <title>LIFF - Get Group ID</title>
+    <meta charset="UTF-8" />
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <style>
-      body { font-family: sans-serif; text-align: center; margin-top: 5em; }
-      pre { background: #f2f2f2; padding: 1em; border-radius: 8px; }
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        margin-top: 5em;
+        background-color: #f9f9f9;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 1em;
+        border-radius: 8px;
+        display: inline-block;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        word-break: break-word;
+      }
+      button {
+        margin-top: 1em;
+        padding: 0.5em 1em;
+        font-size: 1em;
+        border-radius: 6px;
+        border: none;
+        background-color: #06c755;
+        color: white;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
-    <h2>LIFF Group Info</h2>
-    <pre id="output">กำลังโหลด...</pre>
+    <h2>📎 Group ID สำหรับ Push</h2>
+    <pre id="output">🔄 กำลังโหลด...</pre>
+    <br />
+    <button id="copyBtn" style="display: none;">📋 คัดลอก Group ID</button>
 
     <script>
       async function main() {
-        await liff.init({ liffId: "2007208271-AYapnm89" });
+        try {
+          await liff.init({ liffId: "2007208271-AYapnm89" }); // 👉 เปลี่ยนตรงนี้
 
-        if (!liff.isInClient()) {
-          document.getElementById("output").textContent = "⚠️ กรุณาเปิดผ่านแอป LINE เท่านั้น";
-          return;
-        }
+          const output = document.getElementById("output");
+          const copyBtn = document.getElementById("copyBtn");
 
-        const context = liff.getContext();
+          if (!liff.isInClient()) {
+            output.textContent = "⚠️ กรุณาเปิดผ่านแอป LINE เท่านั้น";
+            return;
+          }
 
-        if (context.type === "group") {
-          document.getElementById("output").textContent = "✅ Group ID:\n" + context.groupId;
-        } else {
-          document.getElementById("output").textContent = "❌ เปิดจาก: " + context.type + "\nกรุณาเปิดจากกลุ่ม LINE เท่านั้น";
+          const context = liff.getContext();
+
+          if (context.type === "group") {
+            const groupId = context.groupId;
+            output.textContent = groupId;
+
+            copyBtn.style.display = "inline-block";
+            copyBtn.onclick = function () {
+              navigator.clipboard.writeText(groupId);
+              alert("✅ คัดลอก Group ID เรียบร้อยแล้ว:\n" + groupId);
+            };
+          } else {
+            output.textContent =
+              "❌ ตอนนี้เปิดจาก: " + context.type + "\nกรุณาเปิดจากกลุ่ม LINE เท่านั้น";
+          }
+        } catch (err) {
+          document.getElementById("output").textContent =
+            "❌ เกิดข้อผิดพลาด: " + err;
+          console.error(err);
         }
       }
 
